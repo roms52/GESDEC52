@@ -26,13 +26,13 @@ exports.signup = (req, res) => {
           }
         }).then(roles => {
           user.setRoles(roles).then(() => {
-            res.send({ message: "User was registered successfully!" });
+            res.send({ message: "Utilisateur enregistré avec succès!" });
           });
         });
       } else {
         // user role = 2 (user)
         user.setRoles([2]).then(() => {
-          res.send({ message: "User was registered successfully!" });
+          res.send({ message: "Utilisateur enregistré avec succès!" });
         });
       }
     })
@@ -51,7 +51,7 @@ exports.signin = (req, res) => {
   })
     .then(user => {
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        return res.status(404).send({ message: "L'utilisateur n'existe pas." });
       }
       var passwordIsValid = bcrypt.compareSync(
         req.body.password,
@@ -60,7 +60,7 @@ exports.signin = (req, res) => {
       if (!passwordIsValid) {
         return res.status(401).send({
           accessToken: null,
-          message: "Invalid Password!"
+          message: "Mot de passe incorrect!"
         });
       }
       var token = jwt.sign({ id: user.id }, config.secret, {
@@ -69,13 +69,13 @@ exports.signin = (req, res) => {
       var authorities = [];
       user.getRoles().then(roles => {
         for (let i = 0; i < roles.length; i++) {
-          authorities.push("ROLE_" + roles[i].name.toUpperCase());
+          authorities.push(roles[i].name.toUpperCase());
         }
         res.status(200).send({
           id: user.id,
           username: user.username,
           email: user.email,
-          roles: authorities,
+          role: authorities,
           accessToken: token
         });
       });

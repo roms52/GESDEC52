@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+    <a href="#" class="navbar-brand">GESDEC 52</a>
+    <ul class="navbar-nav mr-auto" routerLinkActive="active">
+      <li class="nav-item" *ngIf="showAdminBoard" routerLinkActive="active">
+        <a href="/admin" class="nav-link" routerLink="admin">Administration</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a href="/user" class="nav-link" *ngIf="showUserBoard" routerLink="user">Accès SDED52</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto" *ngIf="!isLoggedIn">
+      <li class="nav-item btn btn-primary">
+        <a href="/register" class="nav-link" routerLink="register">Créer compte</a>
+      </li>
+      <li>  
+        ...
+      </li>
+      <li class="nav-item btn btn-success" >
+        <a href="/login" class="nav-link" routerLink="login">Connexion</a>
+      </li>
+    </ul>
+<!--    <ul class="navbar-nav ml-auto" *ngIf="isLoggedIn">
+      <li class="nav-item">
+        <a href class="nav-link btn btn-danger" (click)="logout()">Déconnexion</a>
+      </li>
+    </ul>  -->
+  </nav>
+ 
