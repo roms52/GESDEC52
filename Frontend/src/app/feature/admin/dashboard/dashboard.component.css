@@ -1,0 +1,56 @@
+.button-row {
+    margin: auto 25px ;
+  }
+
+.menu-button {
+  background-color: #002b5c;
+  color: white;
+  margin : 10px 5px;
+  padding: 0px;
+}
+
+#menu-toggle {
+  background-color: #ffd1b3;
+}
+
+mat-sidenav-container {
+  display: flex;
+}
+
+mat-sidenav {
+
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0px 10px 0px;
+  width: 280px;
+  border-right: none;
+  background: #002b5c;
+  color: white;
+  border-radius: 10px;
+  padding: 0px;
+  text-align: left;
+  flex: 0 1 auto;
+  top: 55px !important;
+}
+
+mat-sidenav-content {
+
+  flex: 1 1 auto;
+  height: calc(100vh - 98px);
+  border-radius: 10px;
+  margin: 10px;
+  display: inline-block;
+  color: lightgray;
+}
+
+.div-row {
+  display: flex;
+  align-items: left;
+}
+
+.button-center {
+  display: flex;
+  margin : auto;
+  justify-content: space-between;
+
+}

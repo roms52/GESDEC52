@@ -2,6 +2,7 @@ module.exports = (sequelize, Sequelize) => {
     const Bpu = sequelize.define("bpu", {
             id: {
                 type: Sequelize.INTEGER,
+                autoIncrement: true,
                 primaryKey: true
             },
             id_marche: {
@@ -25,6 +26,9 @@ module.exports = (sequelize, Sequelize) => {
             tva: {
                 type: Sequelize.DOUBLE
             },
+            id_marche_lie: {
+                type: Sequelize.INTEGER
+            }
 
         },
         {

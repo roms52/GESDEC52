@@ -23,13 +23,6 @@ function initial() {
   });
 }
 
- Data.create({
-    id: 1,
-    titre: "Essai data Grid",
-    description: "Tout est dans le titre",
-    auteur: "Romain"
-  });
-}
  */
 
 app = server.app;
@@ -40,3 +33,4 @@ app.get("/", (req, res) => {
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
 require('./app/routes/admin.routes')(app);
+require('./app/routes/common.routes')(app);

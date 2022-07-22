@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { TokenStorageService } from '../../services/core_Module/token-storage.service';
-import { CommonService } from '../../services/core_Module/common.service';
+import { TokenStorageService } from '../../services/token-storage.service';
+import { CommonService } from '../../services/common.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +12,7 @@ export class NavbarComponent implements OnInit {
   
   isLoggedIn!: boolean;
   username!: string;
-  role!: string;
+  roles!: string;
   showAdminBoard!: boolean;
   showUserBoard!: boolean;
   
@@ -28,13 +28,20 @@ export class NavbarComponent implements OnInit {
     if (this.isLoggedIn) {
       const user = this.tokenStorageService.getUser();
       this.username = user.username;
-      this.role = user.role;
-      this.showAdminBoard = this.role.includes('ADMIN');
-      this.showUserBoard = this.role.includes('USER');
+      this.roles = user.roles;
+      this.showAdminBoard = this.roles.includes('ADMIN');
+      this.showUserBoard = this.roles.includes('USER');
       
     }
+
   }
 
+
+
+  logout(): void {
+    this.tokenStorageService.signOut();
+    window.location.reload();
+  }
 
 
 }

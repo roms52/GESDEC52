@@ -1,1 +1,287 @@
-<p>gestion-user works!</p>
+
+    
+
+   <!-- Tableau affichage des données (user et user_role)--> 
+
+    <div *ngIf = "(showTableUser || showTableUser_Role) && !creatingUser && !creatingUser_Role && !updatingUser && !updatingUser_Role">
+        <ag-grid-angular id="myGrid" style="width: 700px; height: 500px; " 
+        class="ag-theme-alpine"
+          [rowData]="rowData" 
+          [columnDefs]="columnDefs"
+          [gridOptions] = "gridOptions"
+          (selectionChanged)="onSelectionChanged($event)"
+          (gridReady)="onGridReady($event)"
+          (cellValueChanged)= "onCellValueChanged($event)"
+ 
+          ></ag-grid-angular>
+    </div>
+
+<!-- Boutons pour table User-->
+
+    <div *ngIf = "showTableUser  && !creatingUser && !creatingUser_Role && !updatingUser && !updatingUser_Role" class="container" style="margin-top: 30px;">
+        <div class="row">
+          <div class="col-5" style="text-align: right;">
+             <button (click)="crUser()"  class="btn btn-success">Ajouter</button>
+          </div>
+          <div class="col-2" style="text-align: center;">
+            <button (click)="upUser()" [disabled] = "!userSelected" class="btn btn-warning">Modifier</button>
+        </div>
+          <div class="col-5" style="text-align: left;">
+              <button (click)="deleteUser()" class="btn btn-danger">Supprimer</button>
+          </div>
+        </div>
+      </div>
+
+<!-- Boutons pour table User_Role -->
+
+      <div *ngIf = "showTableUser_Role  && !creatingUser && !creatingUser_Role && !updatingUser && !updatingUser_Role" class="container" style="margin-top: 30px;">
+        <div class="row">
+          <div class="col-5" style="text-align: right;">
+             <button (click)="crUser_Role()"  class="btn btn-success">Ajouter</button>
+          </div>
+          <div class="col-2" style="text-align: center;">
+            <button (click)="upUser_Role()" [disabled] = "!userRoleSelected" class="btn btn-warning">Modifier</button>
+        </div>
+          <div class="col-5" style="text-align: left;">
+              <button (click)="deleteUser_Role()" class="btn btn-danger">Supprimer</button>
+          </div>
+        </div>
+      </div>
+
+
+<!-- Formulaire pour modification utilisateur-->
+
+    <div *ngIf ="updatingUser && userSelected" style="width:500px;"  >
+        <form [formGroup] = "userUpdateForm" class="submit-form" style="margin-top: 30px;">  
+      
+            <div class="form-group justify-content-center align-items-center row" >
+              <label for = "username" class="col-md-4 col-form-label">Nom d'utilisateur</label>
+              <div class="col-md-8">
+                  <input type = "text" class="form-control" id="username" formControlName="username" [value]="dataUser.username"/>
+              </div>
+            </div>
+      
+            <div class="form-group mb-3 row">
+              <label for = "email" class="col-md-4 col-form-label">Email</label>
+              <div class="col-md-8">
+                  <input type = "text" class="form-control" id="email" formControlName="email" [value]="dataUser.email"/>
+              </div>
+            </div>
+      
+            <div class="form-group mb-3 row">
+              <label for = "password" class="col-md-4 col-form-label">Password</label>
+              <div class="col-md-8">
+                    <input type = "password" formControlName="password" class="form-control" [value]= "dataUser.password"/> <!-- [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" -->
+                  <div *ngIf="updateUser_submitted && fUu['password'].errors" class="invalid-feedback">
+                          <div *ngIf="fUu['password'].errors['required']">Mot de passe obligatoire</div>
+                          <div *ngIf="fUu['password'].errors['minlength']">Le mot de passe doit comporter 6 caractères mini...</div>
+                      </div>  
+              </div>
+            </div>
+
+            <div class="form-group mb-3 row">
+              <label for = "password" class="col-md-4 col-form-label">Confirm Password</label>
+              <div class="col-md-8">
+                  <input type="password" formControlName="confirmPassword" class="form-control" [ngClass]="{ 'is-invalid': updateUser_submitted && fUu['confirmPassword'].errors }" />
+                      <div *ngIf="updateUser_submitted && fUu['confirmPassword'].errors" class="invalid-feedback">
+                          <div *ngIf="fUu['confirmPassword'].errors['required']">Confirmation de mot de passe obligatoire</div>
+                          <div *ngIf="fUu['confirmPassword'].errors['mustMatch']">Les mots de passe doivent correspondre...</div>
+                      </div>
+              </div>
+          </div>
+      
+            <div class="container">
+              <div class="row">
+              </div>
+            </div>
+      
+            <div class="container" style="margin-top: 30px;">
+                <div class="justify-content-center align-items-center row">
+                  <div >
+                    <button (click)="updateUser()" type="submit" class="btn button-row btn-success">Modifier utilisateur</button> 
+                  </div>
+                  <div >
+                    <button (click)="return_dashboard_user()" class="btn  button-row btn-danger">Retour</button>
+                  </div>
+                </div>
+            </div> 
+      
+            <div>
+              <div *ngIf="updateUser_success" class="alert alert-success">Utilisateur modifié</div>
+            </div>
+            
+      
+          </form> 
+      </div>
+      
+<!-- Formulaire pour création utilisateur-->
+      
+      <div *ngIf ="creatingUser">
+        <form [formGroup] = "userCreateForm" class="submit-form" style="margin-top: 30px;">  
+      
+            <div class="form-group mb-3 row">
+              <label for = "username" class="col-sm-2 col-form-label">Nom d'utilisateur</label>
+              <div class="col-sm-10">
+                  <input type = "text" class="form-control" id="username" formControlName="username"/>
+              </div>
+            </div>
+      
+            <div class="form-group mb-3 row">
+              <label for = "email" class="col-sm-2 col-form-label">Email</label>
+              <div class="col-sm-10">
+                  <input type = "text" class="form-control" id="email" formControlName="email"/>
+              </div>
+            </div>
+      
+            <div class="form-group mb-3 row">
+              <label for = "password" class="col-sm-2 col-form-label">Password</label>
+              <div class="col-sm-10">
+                    <input type = "password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': createUser_submitted && fUc['password'].errors }" />
+                      <div *ngIf="createUser_submitted && fUc['password'].errors" class="invalid-feedback">
+                          <div *ngIf="fUc['password'].errors['required']">Mot de passe obligatoire</div>
+                          <div *ngIf="fUc['password'].errors['minlength']">Le mot de passe doit comporter 6 caractères mini...</div>
+                      </div>
+              </div>
+            </div>
+    
+            <div class="form-group mb-3 row">
+                <label for = "password" class="col-sm-2 col-form-label">Confirm Password</label>
+                <div class="col-sm-10">
+                    <input type="password" formControlName="confirmPassword" class="form-control" [ngClass]="{ 'is-invalid': createUser_submitted && fUc['confirmPassword'].errors }" />
+                        <div *ngIf="createUser_submitted && fUc['confirmPassword'].errors" class="invalid-feedback">
+                            <div *ngIf="fUc['confirmPassword'].errors['required']">Confirmation de mot de passe obligatoire</div>
+                            <div *ngIf="fUc['confirmPassword'].errors['mustMatch']">Les mots de passe doivent correspondre...</div>
+                        </div>
+                </div>
+            </div>
+    
+            <div class="form-group mb-3 row">
+                <label for = "role" class="col-sm-2 col-form-label">Role</label>
+                <div class="col-sm-10">
+                    <select formControlName="id_role" class="form-control">
+                        <option [ngValue]="null" disabled>Choisir role</option>
+                        <option *ngFor="let role of roles " [ngValue]="role.id" >{{role.name}}</option>
+                    </select>
+                </div>
+            </div>   
+    
+            <div class="container">
+              <div class="row">
+              </div>
+            </div>
+    
+            <div class="container" style="margin-top: 30px;">
+                <div class="row">
+                  <div class="col-6" style="text-align: right;">
+                    <button (click)="createUser()" type="submit" class="btn btn-success">Ajouter utilisateur</button> 
+                  </div>
+                  <div class="col-6">
+                    <button (click)="return_dashboard_user()" class="btn btn-danger">Retour</button>
+                  </div>
+                </div>
+            </div> 
+    
+            <div>
+              <div *ngIf="createUser_success" class="alert alert-success">Utilisateur créé</div>
+            </div>
+            
+    
+        </form>
+    
+    </div>
+
+
+    <!-- Formulaire pour modification user_role-->
+
+    <div *ngIf ="updatingUser_Role && userRoleSelected" style="width:500px;"  >
+      <form [formGroup] = "user_RoleUpdateForm" class="submit-form" style="margin-top: 30px;">  
+    
+          <div class="form-group justify-content-center align-items-center row" >
+            <label for = "username" class="col-md-4 col-form-label">Nom d'utilisateur</label>
+            <div class="col-md-8">
+                <input type = "text" class="form-control" id="username" formControlName="username" [value]="dataUser.username" />
+            </div>
+          </div>
+          <div class="form-group justify-content-center align-items-center row">
+            <label for = "role" class="col-md-4 col-form-label">Role</label>
+            <div class="col-md-8">
+                <select formControlName="id_role" class="form-control">
+                    <option [ngValue]="null" disabled>Choisir role</option>
+                    <option *ngFor="let role of roles " [ngValue]="role.id" >{{role.name}}</option>
+                </select>
+            </div>
+          </div>
+    
+          <div class="container">
+            <div class="row">
+            </div>
+          </div>
+    
+          <div class="container" style="margin-top: 30px;">
+              <div class="justify-content-center align-items-center row">
+                <div >
+                  <button (click)="updateUser_Role()" type="submit" class="btn button-row btn-success">Modifier utilisateur/role</button> 
+                </div>
+                <div >
+                  <button (click)="return_dashboard_user_role()" class="btn  button-row btn-danger">Retour</button>
+                </div>
+              </div>
+          </div> 
+    
+          <div>
+            <div *ngIf="updateUser_Role_success" class="alert alert-success">Utilisateur/role modifié</div>
+          </div>
+          
+    
+        </form> 
+    </div>
+    
+<!-- Formulaire pour création user_role-->
+    
+    <div *ngIf ="creatingUser_Role">
+      <form [formGroup] = "user_RoleCreateForm" class="submit-form" style="margin-top: 30px;">  
+    
+          <div class="form-group mb-3 row">
+            <label for = "username" class="col-sm-2 col-form-label">Nom d'utilisateur</label>
+            <div class="col-sm-10">
+              <select formControlName="id_user" class="form-control">
+                <option [ngValue]="null" disabled>Choisir user</option>
+                <option *ngFor="let user of users " [ngValue]="user.id" >{{user.username}}</option>
+            </select>
+            </div>
+          </div>
+    
+          <div class="form-group justify-content-center align-items-center row">
+            <label for = "role" class="col-md-4 col-form-label">Role</label>
+            <div class="col-md-8">
+                <select formControlName="id_role" class="form-control">
+                    <option [ngValue]="null" disabled>Choisir role</option>
+                    <option *ngFor="let role of roles " [ngValue]="role.id" >{{role.name}}</option>
+                </select>
+            </div>
+          </div>
+  
+          <div class="container">
+            <div class="row">
+            </div>
+          </div>
+  
+          <div class="container" style="margin-top: 30px;">
+              <div class="row">
+                <div class="col-6" style="text-align: right;">
+                  <button (click)="createUser_Role()" type="submit" class="btn btn-success">Ajouter utilisateur/role</button> 
+                </div>
+                <div class="col-6">
+                  <button (click)="return_dashboard_user_role()" class="btn btn-danger">Retour</button>
+                </div>
+              </div>
+          </div> 
+  
+          <div>
+            <div *ngIf="createUser_Role_success" class="alert alert-success">Utilisateur/role créé</div>
+          </div>
+          
+  
+      </form>
+  
+  </div>

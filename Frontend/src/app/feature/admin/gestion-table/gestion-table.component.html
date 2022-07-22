@@ -1,1 +1,135 @@
-<p>gestion-table works!</p>
+
+<!-- Tableau affichage des données (différentes tables)--> 
+
+<div *ngIf ="!creating && !updating">
+    <ag-grid-angular id="myGrid" style="width: 1500px; height: 700px; " 
+    class="ag-theme-alpine"
+      [rowData]="rowData" 
+      [columnDefs]="columnDefs"
+      [gridOptions] = "gridOptions"
+      (selectionChanged)="onSelectionChanged($event)"
+      (gridReady)="onGridReady($event)"
+      (cellValueChanged)= "onCellValueChanged($event)"
+      ></ag-grid-angular>
+</div>
+
+<!-- (modelUpdated)="onModelUpdated()" -->
+
+
+<div *ngIf ="!creating && !updating" class="container" style="margin-top: 30px;">
+    <div class="row">
+      <div class="col-5" style="text-align: right;">
+         <button (click)="cr()"  class="btn btn-success">Ajouter</button>
+      </div>
+      <div class="col-2" style="text-align: center;">
+        <button (click)="up()" [disabled] = "!selected" class="btn btn-warning">Modifier</button>
+    </div>
+      <div class="col-5" style="text-align: left;">
+          <button (click)="delete()" class="btn btn-danger">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf ="creating" >
+    <form [formGroup] = "createForm" class="submit-form" style="margin-top: 30px;"> 
+      <div formArrayName = "champForm"  >
+          <div [formGroupName]="n" class="form-group " *ngFor="let champ of champForm.controls ; let n=index"  > 
+            <div  class="form-group mb-3 row">
+                <label for="{{ch[n].nom}}" class="col-sm-3 col-form-label">{{ch[n].rendu}}</label>
+                <div *ngIf="ch[n].type==='text'" class="col-sm-9 col-form-input">
+                  <input type = "text"  class="form-control" id="{{ch[n].nom}}" formControlName="{{ch[n].nom}}" >
+                </div>
+                <div *ngIf="ch[n].type==='select'" class="col-sm-9 col-form-input">
+                  <select formControlName="{{ch[n].nom}}" class="form-control">
+                    <option [ngValue]="null" disabled>Choisir</option>
+                    <option *ngFor="let val of filtreOccurence(ch[n].nom) " [ngValue]="val.id" >{{val.value}}</option>
+                  </select>
+                </div>
+                <div *ngIf="ch[n].type==='number'" class="col-sm-9 col-form-input">
+                  <input type = "number"  class="form-control" id="{{ch[n].nom}}" formControlName="{{ch[n].nom}}" >
+                </div>
+                <div *ngIf="ch[n].type==='boolean'" class="col-sm-9 col-form-input">
+                  <input type = "checkbox"  class="form-control" id="{{ch[n].nom}}" formControlName="{{ch[n].nom}}" >
+                </div>
+                <div *ngIf="ch[n].type==='date'" class="col-sm-9 col-form-input">
+                  <input type = "date"  class="form-control" id="{{ch[n].nom}}" formControlName="{{ch[n].nom}}" >
+                </div>
+            </div>
+          </div>  
+      </div>
+        <div class="container">
+            <div class="row">
+            </div>
+          </div>
+  
+          <div class="container" style="margin-top: 30px;">
+              <div class="row">
+                <div class="col-6" style="text-align: right;">
+                  <button (click)="create()" type="submit" class="btn btn-success">Ajouter</button> 
+                </div>
+                <div class="col-6">
+                  <button (click)="return_dashboard()" class="btn btn-danger">Retour</button>
+                </div>
+              </div>
+          </div> 
+  
+          <div>
+            <div *ngIf="create_success" class="alert alert-success">Ligne créée</div>
+          </div>
+          
+  
+      </form>
+  
+  </div>
+
+  <div *ngIf ="updating" >
+    <form [formGroup] = "createForm" class="submit-form" style="margin-top: 30px;"> 
+      <div formArrayName = "champForm"  >
+          <div [formGroupName]="n" class="form-group " *ngFor="let champ of champForm.controls ; let n=index"  > 
+            <div  class="form-group mb-3 row">
+                <label for="{{ch[n].nom}}" class="col-sm-3 col-form-label">{{ch[n].rendu}} </label>
+                <div *ngIf="ch[n].type==='text'" class="col-sm-9 col-form-input">
+                  <input type = "text"  class="form-control" id="{{ch[n].nom}}" formControlName="{{ch[n].nom}}" >
+                </div>
+                <div *ngIf="ch[n].type==='select'" class="col-sm-9 col-form-input">
+                  <select formControlName="{{ch[n].nom}}" class="form-control">
+                    <option [ngValue]="datas['{{ch[n].nom}}']" selected></option>
+                    <option *ngFor="let val of filtreOccurence(ch[n].nom) " [ngValue]="val.id" >{{val.value}}</option>
+                  </select>
+                </div>
+                <div *ngIf="ch[n].type==='number'" class="col-sm-9 col-form-input">
+                  <input type = "number"  class="form-control" id="{{ch[n].nom}}" formControlName="{{ch[n].nom}}" >
+                </div>
+                <div *ngIf="ch[n].type==='boolean'" class="col-sm-9 col-form-input">
+                  <input type = "checkbox"  class="form-control" id="{{ch[n].nom}}" formControlName="{{ch[n].nom}}" >
+                </div>
+                <div *ngIf="ch[n].type==='date'" class="col-sm-9 col-form-input">
+                  <input type = "date"  class="form-control" id="{{ch[n].nom}}" formControlName="{{ch[n].nom}}" >
+                </div>
+            </div>
+          </div>  
+      </div>
+        <div class="container">
+            <div class="row">
+            </div>
+          </div>
+  
+          <div class="container" style="margin-top: 30px;">
+              <div class="row">
+                <div class="col-6" style="text-align: right;">
+                  <button (click)="update()" type="submit" class="btn btn-success">Enregistrer</button> 
+                </div>
+                <div class="col-6">
+                  <button (click)="return_dashboard()" class="btn btn-danger">Retour</button>
+                </div>
+              </div>
+          </div> 
+  
+          <div>
+            <div *ngIf="update_success" class="alert alert-success">Ligne modifiée</div>
+          </div>
+          
+  
+      </form>
+  
+  </div>

@@ -2,6 +2,7 @@ module.exports = (sequelize, Sequelize) => {
     const Type_cout = sequelize.define("type_cout", {
             id: {
                 type: Sequelize.INTEGER,
+                autoIncrement: true,
                 primaryKey: true
             },
             cout_typ: {

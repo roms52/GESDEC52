@@ -2,6 +2,7 @@ module.exports = (sequelize, Sequelize) => {
     const Flux = sequelize.define("flux", {
             id: {
                 type: Sequelize.INTEGER,
+                autoIncrement: true,
                 primaryKey: true
             },
             nom_flux: {

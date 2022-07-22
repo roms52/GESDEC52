@@ -2,6 +2,7 @@ module.exports = (sequelize, Sequelize) => {
     const Type_tarif_pn = sequelize.define("type_tarif_pn", {
             id: {
                 type: Sequelize.INTEGER,
+                autoIncrement: true,
                 primaryKey: true
             },
             tarif_typ: {

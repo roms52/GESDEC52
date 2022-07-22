@@ -1,3 +1,3 @@
 module.exports = {
-    secret: "gesdec52-secret_key"
+    secret: "gesdec52-secret-key"
   };

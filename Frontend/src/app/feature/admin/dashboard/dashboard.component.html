@@ -1,1 +1,101 @@
-<p>dashboard works!</p>
+<!--
+<div class = "justify-content-center align-items-start " style = "text-align: center; margin-top: 50px;">
+        <div>
+        
+           <a routerLink="gestion_users" routerLinkActive="active"> <button class="btn btn-secondary button-row">Gestion des utilisateurs</button></a>
+        
+            <a routerLink="gestion_tables" routerLinkActive="active"> <button class="btn btn-secondary button-row">Gestion des tables</button></a>  
+
+            <button class="btn btn-secondary button-row" (click)="onShowGestUser()">Gestion des utilisateurs</button>
+        
+            <button class="btn btn-secondary button-row" (click)="onShowGestTable()">Gestion des tables</button>
+        
+        
+        </div>
+
+    <div *ngIf="showGestTable">
+        <app-gestion-table></app-gestion-table>
+    </div>
+    <div *ngIf="showGestUser">
+        <app-gestion-user></app-gestion-user>
+    </div>
+</div>
+-->
+    
+<div>
+    
+<mat-sidenav-container>
+    <mat-sidenav #sidenav class=”sidenav” fixedInViewport= "true"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false">
+        <mat-accordion>
+            <mat-expansion-panel mat-list-item>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <button mat-button class="menu-button" (click)="onShowGestUser()">
+                            <mat-icon>person</mat-icon>
+                            <span> Gestion des utilisateurs</span>
+                        </button>
+                    </mat-panel-title>  
+                </mat-expansion-panel-header> 
+                            <mat-nav-list >
+                                <mat-list-item>
+                                    <button mat-button  class="menu-button" (click)="onShowTabUser()"><mat-icon>apps</mat-icon> Utilisateurs</button>
+                                </mat-list-item>
+                                <mat-list-item>
+                                    <button mat-button class="menu-button" (click)="onShowTabUser_role()"><mat-icon>apps</mat-icon> Utilisateur / Role</button>
+                                </mat-list-item>
+                            </mat-nav-list>
+
+                    
+            </mat-expansion-panel>
+        </mat-accordion>  
+        <mat-accordion>
+            <mat-expansion-panel mat-list-item>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <button mat-button class="menu-button" (click)="onShowGestTable()">
+                            <mat-icon>list_alt</mat-icon>
+                        <span> Gestion des tables</span>
+                        </button>
+                    </mat-panel-title>  
+                </mat-expansion-panel-header> 
+                <mat-nav-list >
+                    <mat-list-item *ngFor="let table of tables">
+                        <button mat-button  class="menu-button" (click)="onShowTables(table.nom)"><mat-icon>apps</mat-icon> {{table.rendu}}</button>
+                    </mat-list-item>
+                </mat-nav-list>        
+            </mat-expansion-panel>
+        </mat-accordion>     
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="div-row" >
+            <p>
+                <button mat-button id="menu-toggle" (click)="sidenav.toggle()">
+                    <mat-icon>reorder</mat-icon>
+                </button>
+            </p>
+            <div class="button-center">
+                <div *ngIf="showGestTable && showTableTables">
+                    <app-gestion-table
+                     [rowData] = "rowData"
+                     [columnDefs]="columnDefs"
+                     [selectedTable]="selectedTable"
+                     [l]="l"
+                     [a]="a"
+                     [c]="c"
+                     [ch]="ch"></app-gestion-table>
+                </div>
+                <div *ngIf="showGestUser && (showTableUser || showTableUser_Role)">
+                    <app-gestion-user 
+                     [rowData] = "rowData"
+                     [columnDefs]="columnDefs" 
+                     [showTableUser]="showTableUser" 
+                     [showTableUser_Role] = "showTableUser_Role"></app-gestion-user>
+                </div>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>    
+</div>

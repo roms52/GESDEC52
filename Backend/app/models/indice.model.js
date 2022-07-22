@@ -2,6 +2,7 @@ module.exports = (sequelize, Sequelize) => {
     const Indice = sequelize.define("indice", {
             id: {
                 type: Sequelize.INTEGER,
+                autoIncrement: true,
                 primaryKey: true
             },
             nom_indice: {
@@ -12,6 +13,9 @@ module.exports = (sequelize, Sequelize) => {
             },
             date_debut: {
                 type: Sequelize.DATEONLY
+            },
+            provisoire: {
+                type: Sequelize.BOOLEAN
             }
         },
         {

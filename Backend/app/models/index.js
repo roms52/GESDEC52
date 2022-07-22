@@ -24,11 +24,12 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 db.user =  require("../models/user.model.js")(sequelize, Sequelize);
 db.role = require("../models/role.model.js")(sequelize, Sequelize);
+db.user_role = require("../models/user_role.model.js")(sequelize, Sequelize);
 db.type_marche = require("../models/type_marche.model.js")(sequelize, Sequelize);
 db.type_cout = require("../models/type_cout.model.js")(sequelize, Sequelize);
 db.type_tarif_pn = require("../models/type_tarif_pn.model.js")(sequelize, Sequelize);
 db.indice = require("../models/indice.model.js")(sequelize, Sequelize);
-db.indice_0 = require("../models/indice_0.model.js")(sequelize, Sequelize);
+db.marche_indice0 = require("./marche_indice0.model.js")(sequelize, Sequelize);
 db.coeff_actu = require("../models/coeff_actu.model.js")(sequelize, Sequelize);
 db.marche = require("../models/marche.model.js")(sequelize, Sequelize);
 db.bpu = require("../models/bpu.model.js")(sequelize, Sequelize);
@@ -43,12 +44,28 @@ db.facture = require("../models/facture.model.js")(sequelize, Sequelize);
 // Initialisation des relations un à plusieurs
 
         // Table User et Role
-            db.role.hasMany(db.user,{
+              db.role.belongsToMany(db.user, {
+                through: db.user_role,
                 foreignKey: 'id_role'
-            });
-            db.user.belongsTo(db.role,{
+              });
+              db.user.belongsToMany(db.role, {
+                through: db.user_role,
+                foreignKey: 'id_user'
+              });
+
+              db.user.hasMany(db.user_role,{
+                foreignKey: 'id_user'
+              });
+              db.user_role.belongsTo(db.user,{
+                foreignKey: 'id_user'
+              });
+
+              db.role.hasMany(db.user_role,{
                 foreignKey: 'id_role'
-            });
+              });
+              db.user_role.belongsTo(db.role,{
+                foreignKey: 'id_role'
+              });
 
         // Table Marché avec toutes les listes liées
             db.type_marche.hasMany(db.marche,{
@@ -79,6 +96,29 @@ db.facture = require("../models/facture.model.js")(sequelize, Sequelize);
                 foreignKey: 'id_coeff_actu'
             });
 
+            // Table croisée pour connaitre indice0 du marché
+            db.marche.belongsToMany(db.indice,{
+                through: db.marche_indice0, foreignKey: 'id_marche' 
+            });
+            db.indice.belongsToMany(db.marche,{
+                through: db.marche_indice0, foreignKey: 'id_indice' 
+            });
+/*
+            db.marche.hasMany(db.marche_indice0,{
+                foreignKey: 'id_marche'
+            });
+*/
+            db.marche_indice0.belongsTo(db.marche,{
+                foreignKey: 'id_marche'
+            });
+/*
+            db.indice.hasMany(db.marche_indice0,{
+                foreignKey: 'id_indice'
+            });
+*/
+            db.marche_indice0.belongsTo(db.indice,{
+                foreignKey: 'id_indice'
+            });
 
         // Tables BPU et tableau de bord avec toutes les listes liées
             db.marche.hasMany(db.bpu,{
@@ -157,6 +197,40 @@ db.facture = require("../models/facture.model.js")(sequelize, Sequelize);
             });
             db.tableau_bord.belongsTo(db.prestation,{
                 foreignKey: 'id_prestation'
+            });
+
+
+
+                // Listes liées 2 fois à BPU ou tableau de bord (utilisation d'alias)
+
+            db.marche.hasMany(db.bpu,{
+                foreignKey: 'id_marche_lie'
+            });
+            db.bpu.belongsTo(db.marche,{
+                as: 'marche_lie',
+                foreignKey: 'id_marche_lie'
+            });
+
+
+
+
+            db.dechetterie.hasMany(db.tableau_bord,{
+                foreignKey: 'id_dechetterie_init'
+            });
+            db.tableau_bord.belongsTo(db.dechetterie,{
+                as: 'dechetterie_init',
+                foreignKey: 'id_dechetterie_init'
+            });
+
+           
+
+
+            db.flux.hasMany(db.tableau_bord,{
+                foreignKey: 'id_flux_init'
+            });
+            db.tableau_bord.belongsTo(db.flux,{
+                as: 'flux_init',
+                foreignKey: 'id_flux_init'
             });
 
 

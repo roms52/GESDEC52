@@ -2,6 +2,7 @@ module.exports = (sequelize, Sequelize) => {
     const Tableau_bord = sequelize.define("tableau_bord", {
             id: {
                 type: Sequelize.INTEGER,
+                autoIncrement: true,
                 primaryKey: true
             },
             date_prestation: {
@@ -54,6 +55,15 @@ module.exports = (sequelize, Sequelize) => {
             },
             id_facture: {
                 type: Sequelize.INTEGER
+            },
+            id_dechetterie_init: {
+                type: Sequelize.INTEGER
+            },
+            id_flux_init: {
+                type: Sequelize.INTEGER
+            },
+            quantite_init: {
+                type: Sequelize.DOUBLE
             }
 
         },

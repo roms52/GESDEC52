@@ -1,0 +1,14 @@
+#myGrid {
+    width: 100%;
+    max-width: 2000px;
+    margin: auto;
+  }
+
+  .button-row {
+    margin: 3px 25px 25px;
+  }
+
+  .color-ffd1b3 {
+    background-color: #ffd1b3;
+    box-shadow: #ffd1b3;
+  }

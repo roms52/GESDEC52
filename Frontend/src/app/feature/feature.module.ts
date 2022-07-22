@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RegisterComponent } from './components/register/register.component';
+import { FeatureRoutingModule } from './feature-routing.moule';
+import { MatSidenavModule } from '@angular/material/sidenav';
+
 
 
 
 @NgModule({
-  declarations: [
-    RegisterComponent
-  ],
+  declarations: [ ],
   imports: [
-    CommonModule
+   
+    CommonModule,
+    FeatureRoutingModule
   ],
-  exports: [
-    RegisterComponent
-  ]
+  exports: []
 })
 export class FeatureModule { }

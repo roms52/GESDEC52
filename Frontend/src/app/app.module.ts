@@ -4,9 +4,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
-import { AdminModule } from './feature/admin/admin.module';
-import { FeatureModule } from './feature/feature.module';
-import { UserModule } from './feature/user/user.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { authInterceptorProviders } from './core/helpers/auth.interceptor';
+
 
 
 @NgModule({
@@ -15,13 +15,13 @@ import { UserModule } from './feature/user/user.module';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     CoreModule,
-    FeatureModule,
-    AdminModule,
-    UserModule
+    BrowserAnimationsModule,
+    AppRoutingModule
   ],
-  providers: [],
+  exports: [
+  ],
+  providers: [[authInterceptorProviders]],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

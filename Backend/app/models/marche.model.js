@@ -2,10 +2,8 @@ module.exports = (sequelize, Sequelize) => {
     const Marche = sequelize.define("marche", {
             id: {
                 type: Sequelize.INTEGER,
+                autoIncrement: true,
                 primaryKey: true
-            },
-            ref_marche: {
-                type: Sequelize.STRING
             },
             id_typ_marche: {
                 type: Sequelize.INTEGER
@@ -30,6 +28,12 @@ module.exports = (sequelize, Sequelize) => {
             },
             id_typ_tarif_pn: {
                 type: Sequelize.INTEGER
+            },
+            commentaire: {
+                type: Sequelize.STRING
+            },
+            inactif: {
+                type: Sequelize.BOOLEAN
             }
 
         },

@@ -2,13 +2,11 @@ module.exports = (sequelize, Sequelize) => {
     const Coeff_actu = sequelize.define("coeff_actu", {
             id: {
                 type: Sequelize.INTEGER,
+                autoIncrement: true,
                 primaryKey: true
             },
             req_maj_valeur: {
-                type: Sequelize.STRING
-            },
-            type: {
-                type: Sequelize.STRING
+                type: Sequelize.TEXT
             }
         },
         {
