@@ -15,6 +15,9 @@ import { MatListModule } from '@angular/material/list';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { ColorTextDirective } from './directives/colorText.directive';
+
+
 
 
 
@@ -23,7 +26,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
   declarations: [
     GestionUserComponent,
     GestionTableComponent,
-    DashboardComponent
+    DashboardComponent,
+    ColorTextDirective
   ],
   imports: [
     CommonModule,

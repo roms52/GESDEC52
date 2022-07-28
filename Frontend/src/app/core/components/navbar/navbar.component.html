@@ -1,26 +1,31 @@
 <nav class="navbar navbar-expand ">
-    <a href="#" class="navbar-brand">GESDEC 52</a>
+  <img
+        id="logo-sded"
+        src="../../../../assets/image001.jpg"
+        style="align-self: center;width: 44px;margin-right:15px;"
+      />
+  <!--  <a href="#" class="navbar-brand">GESDEC 52</a> -->
     <ul class="navbar-nav mr-auto" routerLinkActive="active">
       <li class="nav-item" *ngIf="showAdminBoard" routerLinkActive="active">
-        <a href="/app/admin" class="nav-link" routerLink="app/admin">Administration</a>
+        <a href="/app/admin" class="nav-link" routerLink="app/admin" routerLinkActive="selected-class">Administration</a>
       </li>
       <li class="nav-item" routerLinkActive="active">
-        <a href="/app/user" class="nav-link" *ngIf="showUserBoard" routerLink="app/user">Accès SDED52</a>
+        <a href="/app/user" class="nav-link" *ngIf="showUserBoard" routerLink="app/user" routerLinkActive="selected-class">Accès SDED52</a>
       </li>
     </ul>
     <ul class="navbar-nav ml-auto" *ngIf="!isLoggedIn">
-      <li class="nav-item btn btn-primary">
+      <li class="nav-item btn btn-primary button-sded">
         <a href="/register" class="nav-link" routerLink="register">Créer compte</a>
       </li>
       <li>  
-        ...
+           
       </li>
-      <li class="nav-item btn btn-success" >
-        <a href="/login" class="nav-link" routerLink="login">Connexion</a>
+      <li class="nav-item btn btn-success button-sded" >
+        <a href="/login" class="nav-link " routerLink="login">Connexion</a>
       </li>
     </ul>
     <ul class="navbar-nav ml-auto" *ngIf="isLoggedIn">
-      <li class="nav-item">
+      <li class="nav-item button-sded">
         <a href class="nav-link btn btn-danger" (click)="logout()">Déconnexion</a>
       </li>
     </ul>  

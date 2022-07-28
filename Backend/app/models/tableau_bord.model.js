@@ -8,6 +8,12 @@ module.exports = (sequelize, Sequelize) => {
             date_prestation: {
                 type: Sequelize.DATEONLY
             },
+            mois_prestation: {
+                type: Sequelize.INTEGER
+            },
+            annee_prestation: {
+                type: Sequelize.INTEGER
+            },
             id_bpu: {
                 type: Sequelize.INTEGER
             },
@@ -31,6 +37,9 @@ module.exports = (sequelize, Sequelize) => {
             },
             quantite: {
                 type: Sequelize.DOUBLE
+            },
+            id_unite: {
+                type: Sequelize.INTEGER
             },
             tarif_pn: {
                 type: Sequelize.DOUBLE

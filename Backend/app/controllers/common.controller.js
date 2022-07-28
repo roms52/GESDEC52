@@ -5,7 +5,7 @@ const Sequelize = db.sequelize;
 const Models = 
 ['type_marche', 'type_cout', 'type_tarif_pn', 'indice', 'marche_indice0',
 'coeff_actu', 'marche', 'bpu', 'tableau_bord', 'prestataire',
-'dechetterie', 'flux', 'prestation', 'facture','user','user_role'];
+'dechetterie', 'flux', 'prestation', 'facture','user','role','user_role'];
 
 
 // Récupère rows de la table en params, avec les jointures si précisées et les colonnes et attributs souhaités dans le rendu du Grid
@@ -41,6 +41,7 @@ rowData =[];
             }
                 
                 dataReturn = [rowData,columnDef];
+
                 server.socket.emit('allDatas',dataReturn);
             res.send(dataReturn);
             })

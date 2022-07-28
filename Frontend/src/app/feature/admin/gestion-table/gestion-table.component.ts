@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ColumnApi, GridApi, GridReadyEvent, SelectionChangedEvent } from 'ag-grid-community';
 import { Subscription } from 'rxjs';
@@ -21,6 +21,8 @@ export class GestionTableComponent implements OnInit {
   @Input() a!: any;
   @Input() c!: any;
   @Input() ch!: any;
+  @Output() blockNavSideButton = new EventEmitter();
+  @Input() navSideButton! : boolean; 
 
   public gridOptions = {
     defaultColDef : {
@@ -53,7 +55,7 @@ export class GestionTableComponent implements OnInit {
 
   // Variables pour occurences listes prédef.
   allOccListSub!: Subscription;
-  occur: {chForm: string,id: string, value: string}[] = []
+  occur: {chForm: string,id: string, value: string, sous_value: string}[] = []
  
 
   
@@ -72,7 +74,7 @@ export class GestionTableComponent implements OnInit {
               next: (datas) => { 
               
                        for (let i=0; i<datas.length; i++){
-                          this.occur.push( {chForm: val.nom, id : datas[i].id , value : datas[i][val.nom_lie]})
+                          this.occur.push( {chForm: val.nom, id : datas[i].id , value : datas[i][val.nom_lie], sous_value : datas[i][val.sous_nom_lie]})
                        }
                          
               },
@@ -82,7 +84,6 @@ export class GestionTableComponent implements OnInit {
     })
 
   }
-
 
 
   onGridReady(params: GridReadyEvent) {
@@ -101,7 +102,7 @@ export class GestionTableComponent implements OnInit {
       })
    
       this.selected = true;
-console.log (this.datas)
+
   }
 
   onCellValueChanged(event: any) {
@@ -150,6 +151,8 @@ console.log (this.datas)
       this.updating = false;
       this.creating = true;
       this.create_success = false;
+      this.navSideButton = false;
+      this.blockNavSideButton.emit(this.navSideButton);
 
       this.createForm = this.formBuilder.group({
         champForm: this.formBuilder.array([])
@@ -188,6 +191,8 @@ console.log (this.datas)
     this.creating = false;
     this.updating = true;
     this.update_success = false;
+    this.navSideButton = false;
+    this.blockNavSideButton.emit(this.navSideButton);
 
     this.createForm = this.formBuilder.group({
       champForm: this.formBuilder.array([])
@@ -242,6 +247,8 @@ console.log (this.datas)
     this.creating = false;
     this.updating = false;
     this.selected = false;
+    this.navSideButton = true;
+    this.blockNavSideButton.emit(this.navSideButton);
   }
   
 }

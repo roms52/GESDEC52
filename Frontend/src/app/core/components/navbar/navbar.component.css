@@ -1,7 +1,18 @@
 .navbar{
-    background-color: #002b5c; 
+   /* background-color: #002b5c; */
+   background-color: #42bdd4;
 }
 
 a {
     color: white; 
+}
+
+.selected-class {
+  /*  color:#ffd1b3; */
+  color: #f39423;
+}
+
+.button-sded {
+    margin-left: 10px;
+    margin-right: 10px;
 }

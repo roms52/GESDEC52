@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
+
 
 const API_URL = 'http://localhost:8084/api/admin';
 
@@ -17,12 +19,16 @@ export class AdminService {
 tables = [{nom: 'bpu', rendu: 'BPU'}, {nom: 'coeff_actu', rendu: 'Coeff Actu'}, {nom: 'dechetterie', rendu: 'Déchetterie'}, {nom: 'flux', rendu: 'Flux'},
              {nom: 'indice', rendu: 'Indice'}, {nom: 'marche', rendu: 'Marché'}, {nom: 'marche_indice0', rendu: 'Marché indice_0'},
             {nom: 'prestataire', rendu: 'Prestataire'}, {nom: 'prestation', rendu: 'Prestation'}, {nom: 'type_cout', rendu: 'Type de cout'},
-             {nom: 'type_marche', rendu: 'Type de marché'}, {nom: 'type_tarif_pn', rendu: 'Type de tarif Pn'}];
+             {nom: 'type_marche', rendu: 'Type de marché'}, {nom: 'type_tarif_pn', rendu: 'Type de tarif Pn'}]
+             
+tabUser = [ {nom: 'user', rendu: 'Utilisateurs'},
+            {nom: 'user_role', rendu: 'Utilisateur / Role'}];
 
   liens = {bpu: "[{model:db.marche,attributes:[]},{model:db.prestataire,attributes:[]},{model:db.dechetterie,attributes:[]},{model:db.flux,attributes:[]},\
                 {model:db.prestation,attributes:[]},{model:db.marche,as:'marche_lie',attributes:[]}]",
           marche: "[{model:db.type_marche,attributes:[]},{model:db.type_cout,attributes:[]},{model:db.coeff_actu,attributes:[]},{model:db.type_tarif_pn,attributes:[]}]",
-          marche_indice0: "[{model:db.marche,attributes:[]},{model:db.indice,attributes:[]}]"}
+          marche_indice0: "[{model:db.marche,attributes:[]},{model:db.indice,attributes:[]}]",
+          user_role : "[{model:db.user,attributes:[]},{model:db.role,attributes:[]}]"}
 
 
   attributes = {bpu: "['id', 'id_marche', [Sequelize.col('marche.ref_marche'),'ref_marche'], 'id_prestataire', [Sequelize.col('prestataire.nom_prestataire'),\
@@ -33,7 +39,8 @@ tables = [{nom: 'bpu', rendu: 'BPU'}, {nom: 'coeff_actu', rendu: 'Coeff Actu'}, 
                 marche: "['id', 'ref_marche','id_typ_marche',[Sequelize.col('type_marche.marche_typ'),'marche_typ'],'montant_max','date_debut','date_fin',\
                 'id_typ_cout',[Sequelize.col('type_cout.cout_typ'),'cout_typ'],'id_coeff_actu',[Sequelize.col('coeff_actu.req_maj_valeur'),'req_maj_valeur'],\
                 'date_remise_offre','id_typ_tarif_pn', [Sequelize.col('type_tarif_pn.tarif_typ'),'tarif_typ'],'commentaire','inactif']",
-                marche_indice0: "['id','id_marche', [Sequelize.col('marche.ref_marche'),'ref_marche'], 'id_indice', [Sequelize.col('indice.nom_indice'),'nom_indice']]",}
+                marche_indice0: "['id','id_marche', [Sequelize.col('marche.ref_marche'),'ref_marche'], 'id_indice', [Sequelize.col('indice.nom_indice'),'nom_indice']]",
+                user_role: "['id','id_user', [Sequelize.col('user.username'),'username'], 'id_role', [Sequelize.col('role.name'),'name']]"}
 
 
   cols= {bpu: "[{field:'ref_marche',headerName: 'Ref. Marché'},{field:'nom_prestataire',headerName: 'Nom Prestataire'},\
@@ -56,7 +63,9 @@ tables = [{nom: 'bpu', rendu: 'BPU'}, {nom: 'coeff_actu', rendu: 'Coeff Actu'}, 
         prestation :"[{field:'nom_prestation',headerName: 'Prestation'}]", 
         type_cout :"[{field:'cout_typ',headerName: 'Type cout'}]", 
         type_marche :"[{field:'marche_typ',headerName: 'Type marché'}]",
-        type_tarif_pn :"[{field:'tarif_typ',headerName: 'Type tarif'}]"  }
+        type_tarif_pn :"[{field:'tarif_typ',headerName: 'Type tarif'}]",
+        user : "[{field:'username',headerName: 'Nom'},{field:'email',headerName: 'Email'},{field:'password',headerName: 'Password'}]",
+        user_role : "[{field:'username',headerName: 'Nom'},{field:'name',headerName: 'Rôle'}]"  }
 
 
 
@@ -108,10 +117,20 @@ tables = [{nom: 'bpu', rendu: 'BPU'}, {nom: 'coeff_actu', rendu: 'Coeff Actu'}, 
           prestation :[{nom:'nom_prestation',rendu: 'Prestation',type:'text'}], 
           type_cout :[{ nom:'cout_typ',rendu: 'Type cout',type:'text'}], 
           type_marche :[{nom:'marche_typ',rendu: 'Type marché',type:'text'}],
-          type_tarif_pn :[{nom:'tarif_typ',rendu: 'Type tarif',type:'text'}]  }
-   
+          type_tarif_pn :[{nom:'tarif_typ',rendu: 'Type tarif',type:'text'}],
+          user : [ {nom:'username',rendu: 'Nom',type:'text'},
+                    {nom:'email',rendu: 'Email',type:'text'},
+                    {nom:'password',rendu: 'Password',type:'pwd', validator:[ Validators.required, Validators.minLength(6) ]},
+                    {nom:'confPwd',rendu: 'Confirm Pwd',type:'pwd'}
+                  ],
+          user_role: [  {nom:'id_user',rendu: 'Nom',type:'select',tab_lie:'user',nom_lie:'username',occ:"['id','username']"},
+                        {nom:'id_role',rendu: 'Role',type:'select',tab_lie:'role',nom_lie:'name',occ:"['id','name']"}
+                      ] }
+  
         
-// Fonction pour CRUD backend (Create,Read,Update,Delete)
+          
+        
+// Fonctions pour CRUD backend (Create,Read,Update,Delete) pour toutes les tables
 
   getAllDatas(table:string,lien: string, attribute: string, column: string): Observable<any>{
     return this.http.get<[]>(`${API_URL}/${table}?lien=${lien}&attr=${attribute}&col=${column}`)
@@ -129,45 +148,16 @@ tables = [{nom: 'bpu', rendu: 'BPU'}, {nom: 'coeff_actu', rendu: 'Coeff Actu'}, 
     return this.http.post(`${API_URL}/${table}/${id}`,data) 
    }
 
-  getAllUserRole(): Observable<any> {
-    return this.http.get<[]>(`${API_URL}/user_role`)
-  }
-
-  getAllUser(): Observable<any> {
-    return this.http.get<[]>(`${API_URL}/user`)
-  }
-
-  getAllRole(): Observable<any> {
-    return this.http.get<[]>(`${API_URL}/allrole`);
-  }
-
-  createUser(data:any){
+ 
+   // Fonctions create et update spécifiques pour la table User (avec hachage mot de passe)
+   createUser(data:any){
     return this.http.post(`${API_URL}/user`,data)
-     
-   }
-
-   createUserRole(data:any){
-    return this.http.post(`${API_URL}/user_role`,data)
-     
    }
 
    updateUser(id:any,data:any){
-    return this.http.post(`${API_URL}/user/${id}`,data)
-     
+    return this.http.post(`${API_URL}/user/${id}`,data)  
    }
 
-   updateUserRole(id:any,data:any){
-    return this.http.post(`${API_URL}/user_role/${id}`,data)
-     
-   }
-
-  deleteUser(id:any): Observable<any>{
-    return this.http.delete(`${API_URL}/user/${id}`) 
-  }
-
-  deleteUserRole(id:any): Observable<any>{
-    return this.http.delete(`${API_URL}/user_role/${id}`) 
-  }
 }
 
 

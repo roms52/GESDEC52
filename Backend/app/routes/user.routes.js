@@ -1,7 +1,9 @@
 const { authJwt } = require("../middleware");
 const { verifySignUp } = require("../middleware");
-const controller = require("../controllers/admin.controller");
-const auth_controller = require("../controllers/auth.controller");
+const controller = require("../controllers/user.controller");
+const authController = require("../controllers/auth.controller");
+
+
 module.exports = function(app) {
   app.use(function(req, res, next) {
     res.header(
@@ -13,7 +15,7 @@ module.exports = function(app) {
 
 
 
-
+  app.get("/api/user/:table",controller.allDatasOfTable)
 
 
 

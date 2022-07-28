@@ -2,15 +2,18 @@
     margin: auto 25px ;
   }
 
-.menu-button {
-  background-color: #002b5c;
+.menu-button-side {
+ /* background-color: #002b5c; */
+ background-color: #42bdd4;
   color: white;
   margin : 10px 5px;
   padding: 0px;
 }
 
 #menu-toggle {
-  background-color: #ffd1b3;
+  /*background-color: #ffd1b3; */
+  background-color: #f39423;
+
 }
 
 mat-sidenav-container {
@@ -24,7 +27,8 @@ mat-sidenav {
   margin: 10px 0px 10px 0px;
   width: 280px;
   border-right: none;
-  background: #002b5c;
+  background: #42bdd4;
+  /*background: #002b5c;*/
   color: white;
   border-radius: 10px;
   padding: 0px;
@@ -53,4 +57,9 @@ mat-sidenav-content {
   margin : auto;
   justify-content: space-between;
 
+}
+
+.mat-list-item.active {
+  /*  color:#ffd1b3; */
+  color: #f39423;
 }

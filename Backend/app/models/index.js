@@ -39,7 +39,7 @@ db.dechetterie = require("../models/dechetterie.model.js")(sequelize, Sequelize)
 db.flux = require("../models/flux.model.js")(sequelize, Sequelize);
 db.prestation = require("../models/prestation.model.js")(sequelize, Sequelize);
 db.facture = require("../models/facture.model.js")(sequelize, Sequelize);
-
+db.unite = require("../models/unite.model.js")(sequelize, Sequelize);
 
 // Initialisation des relations un à plusieurs
 
@@ -103,19 +103,11 @@ db.facture = require("../models/facture.model.js")(sequelize, Sequelize);
             db.indice.belongsToMany(db.marche,{
                 through: db.marche_indice0, foreignKey: 'id_indice' 
             });
-/*
-            db.marche.hasMany(db.marche_indice0,{
-                foreignKey: 'id_marche'
-            });
-*/
+
             db.marche_indice0.belongsTo(db.marche,{
                 foreignKey: 'id_marche'
             });
-/*
-            db.indice.hasMany(db.marche_indice0,{
-                foreignKey: 'id_indice'
-            });
-*/
+
             db.marche_indice0.belongsTo(db.indice,{
                 foreignKey: 'id_indice'
             });
@@ -234,12 +226,26 @@ db.facture = require("../models/facture.model.js")(sequelize, Sequelize);
             });
 
 
-        // Table tableau de bord et facture
+        // Table tableau de bord et facture + unite + typ_tarif_pn
             db.facture.hasMany(db.tableau_bord,{
                 foreignKey: 'id_facture'
             });
             db.tableau_bord.belongsTo(db.facture,{
                 foreignKey: 'id_facture'
+            });
+
+            db.unite.hasMany(db.tableau_bord,{
+                foreignKey: 'id_unite'
+            });
+            db.tableau_bord.belongsTo(db.unite,{
+                foreignKey: 'id_unite'
+            });
+
+            db.type_tarif_pn.hasMany(db.tableau_bord,{
+                foreignKey: 'id_typ_tarif_pn'
+            });
+            db.tableau_bord.belongsTo(db.type_tarif_pn,{
+                foreignKey: 'id_typ_tarif_pn'
             });
 
         

@@ -10,6 +10,7 @@ import { CoreRoutingModule } from './core-routing.module';
 
 
 
+
 @NgModule({
   declarations: [
     RegisterComponent,

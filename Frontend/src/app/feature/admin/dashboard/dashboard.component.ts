@@ -1,9 +1,10 @@
-import { Component, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { map, Observable, Subscription } from 'rxjs';
 import {  BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AdminService } from 'src/app/core/services/admin.service';
 import { io } from 'socket.io-client';
 import { CommonService } from 'src/app/core/services/common.service';
+import { Champs } from 'src/app/core/models/admin';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,12 +18,14 @@ export class DashboardComponent implements OnInit {
   @ViewChild('sidenav') sidenav: any;
   
   tables!: any;
+  tabUser!: any;
   liens!: any;
   attributes!: any;
   cols!: any;
   champs!: any;
+  tabl!: { nom: string; rendu: string; }[];
 
-  showTableUser_Role! : boolean;
+  navSideButton!: boolean;
   showTableUser! : boolean;
   showTableTables! : boolean;
 
@@ -34,7 +37,8 @@ export class DashboardComponent implements OnInit {
   l!: string;
   a!: string;
   c!: string;
-  ch!: string[];
+  ch!: Champs[];
+  
 
   private socket: any;
 
@@ -55,14 +59,22 @@ export class DashboardComponent implements OnInit {
 
     
   ngOnInit(): void {
+    this.navSideButton = true;
     this.showGestTable = false;
     this.showGestUser = false;
+    this.tabl = this.adminService.tables;
     this.tables = this.adminService.tables;
+    this.tabUser = this.adminService.tabUser;
     this.liens = this.adminService.liens;
     this.attributes = this.adminService.attributes;
     this.cols = this.adminService.cols;
     this.champs= this.adminService.champs;
   }
+
+  // Fonction qui recupere l'emitter depuis les childs pour bloquer les boutons de nav quand création ou modification
+  blockButton(value: boolean){
+    this.navSideButton = value
+      }
 
   onShowGestUser() {
     this.showGestTable = false;
@@ -74,44 +86,37 @@ export class DashboardComponent implements OnInit {
     this.showGestTable = true;
   }
 
-  onShowTabUser(){
-    this.showTableUser_Role = false;
+  onShowTabUser(tab:any){
     this.showTableUser = true;
     this.showGestUser = true;
     this.showGestTable = false;
-    this.datasSub = this.adminService.getAllUser().subscribe(datas => {
-      this.columnDefs = [{field:'id',hide:true},{field:'username', headerName:'Nom'},{field:'email', headerName:'Mail'},{field:'password', headerName:'Mot de passe'}];
-      this.rowData = datas;
+    this.selectedTable = tab;
 
+    
+
+     // Valeurs récupérées dans le service pour mise en forme des datas
+    const lien = this.commonService.getValueByKey(this.liens,tab);
+    this.l = lien !== undefined ? lien : '';
+    const attribute = this.commonService.getValueByKey(this.attributes,tab);
+    this.a = attribute !== undefined ? attribute : '';
+    const column = this.commonService.getValueByKey(this.cols,tab);
+    this.c = column !== undefined ? column : '';
+
+    // Valeurs des champs de formulaire de la table envoyées dans le component enfant
+    const champs = this.commonService.getValueByKey(this.champs,tab);
+    this.ch = champs !== undefined ? champs : '';
+
+    this.datasSub = this.adminService.getAllDatas(tab,this.l,this.a,this.c).subscribe(datas => {
+      this.showTableTables = true;
+      this.columnDefs =  datas[1];
+      this.rowData = datas[0];
     });
-
-  /*  this.socket.on('allUser', (data: any) => {
-      this.columnDefs = [{field:'id',hide:true},{field:'username', headerName:'Nom'},{field:'email', headerName:'Mail'},{field:'password', headerName:'Mot de passe'}];
-      this.rowData = data;
-    });*/
-
-  }
-
-
-  onShowTabUser_role(){
-    this.showTableUser = false;
-    this.showTableUser_Role = true;
-    this.showGestUser = true;
-    this.showGestTable = false;
-    this.datasSub = this.adminService.getAllUserRole().subscribe(datas => {
-      this.columnDefs = [{field:'id_user',hide:true},{field:'username', headerName:'Nom'},{field:'role', headerName:'Role'},{field:'id_role',hide:true}];
-      this.rowData = datas;
-    });
-
-
-    this.socket.on('allUser_Role', (data: any) => {
-      this.columnDefs = [{field:'id_user',hide:true},{field:'username', headerName:'Nom'},{field:'role', headerName:'Role'},{field:'id_role',hide:true}];
-      this.rowData = data;
-    });
-
-  }
 
   
+
+  }
+
+
 
   onShowTables(tab: any) {
    
@@ -119,7 +124,7 @@ export class DashboardComponent implements OnInit {
     this.showGestUser = false;
     this.showGestTable = true;
     this.selectedTable = tab;
-
+   
     // Valeurs récupérées dans le service pour mise en forme des datas
     const lien = this.commonService.getValueByKey(this.liens,tab);
     this.l = lien !== undefined ? lien : '';

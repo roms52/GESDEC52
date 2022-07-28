@@ -1,1 +1,11 @@
-<p>visualisation works!</p>
+<div >
+    <ag-grid-angular id="myGrid" style="width: 1500px; height: 700px; " 
+    class="ag-theme-alpine"
+      [rowData]="rowData" 
+      [columnDefs]="columnDefs"
+      [gridOptions] = "gridOptions"
+      (selectionChanged)="onSelectionChanged($event)"
+      (gridReady)="onGridReady($event)"
+      (cellValueChanged)= "onCellValueChanged($event)"
+      ></ag-grid-angular>
+</div>

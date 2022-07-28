@@ -6,11 +6,12 @@ const Op = db.Sequelize.Op;
 const Sequelize = db.sequelize;
 var bcrypt = require("bcryptjs");
 const server = require("../../server");
+const authController = require("../controllers/auth.controller");
 
 
 const Models = 
 ['type_marche', 'type_cout', 'type_tarif_pn', 'indice', 'marche_indice0',
-'coeff_actu', 'marche', 'bpu', 'tableau_bord', 'prestataire',
+'coeff_actu', 'marche', 'bpu', 'prestataire',
 'dechetterie', 'flux', 'prestation', 'facture','user','user_role'];
 
 
@@ -27,6 +28,7 @@ exports.allDatasOfTable = (req, res) => {
           const Attr = req.query.attr;
           const Col = req.query.col
          
+
           dataReturn = [[]]
   
           if (Lien !== '') {
@@ -157,11 +159,13 @@ exports.allDatasOfTable = (req, res) => {
         });
   };
 
+
   exports.createData = (req, res) => {
 
     table = Models.find(el => el === req.params.table);
     const Model = 'db.' + table;
     const Champs = {};
+    
     
     for(let i=0; i < req.body.length;i++){
       Object.assign(Champs,req.body[i])
@@ -176,15 +180,19 @@ exports.allDatasOfTable = (req, res) => {
       });
   };
   
+
   exports.updateData = (req,res) => {
     table = Models.find(el => el === req.params.table);
     const Model = 'db.' + table;
     id = req.params.id;
     const Champs={};
 
+
     for(let i=0; i < req.body.length;i++){
       Object.assign(Champs,req.body[i])
+      
     };
+
   
     eval(Model).update(
       eval(Champs),
@@ -210,138 +218,13 @@ exports.allDatasOfTable = (req, res) => {
   };
 
 
-// Méthodes READ (user, roles et user_role)
 
-exports.allUser_Role = (req, res) => {
-    
- User_Role.findAll({
-  include: [{
-    model: User,
-    attributes:[]},
-    {
-    model:Role,
-    attributes:[]
-  }],
-  attributes: ['id','id_user','id_role', [Sequelize.col('user.username'),'username'],[Sequelize.col('role.name'),'role']],
-  order:[['id', 'ASC']],
-  raw : true
-})
-  .then(data=>{
-     server.socket.emit('allUser_Role',data);
-      res.send(data);
-  })
-  .catch(err=>{
-      res.status(500).send({
-          message:
-          err.message || "erreur survenue"
-      });
-  });
-};
-
-exports.allUser = (req, res) => {
-
-  User.findAll({
-    order:[['id', 'ASC']],
-    raw: true})
-          .then(data=>{
-            server.socket.emit('allUser',data);
-            res.send(data);
-        })
-        .catch(err=>{
-            res.status(500).send({
-                message:
-                err.message || "erreur survenue"
-            });
-        });
-  
-  }
-
-
-  exports.allRole = (req, res) => {
-    
-    Role.findAll()
-     .then(data=>{
-         res.send(data);
-     })
-     .catch(err=>{
-         res.status(500).send({
-             message:
-             err.message || "erreur survenue"
-         });
-     });
-   };
-  
-  // Méthodes CREATE
-
-  exports.createUserRole = (req, res) => {
-
-    // Save User_Role to Database
-    User_Role.create({
-      id_user: req.body.id_user,
-      id_role: req.body.id_role
-    })
-      .then(res.send({ message: "Utilisateur/Role enregistré avec succès!" }))
-      .catch(err => {
-        res.status(500).send({ message: err.message });
-      });
-  };
-  
-
-   // Méthodes DELETE
-
-  exports.deleteUser = (req,res) => {
-    const id = req.params.id;
-  
-    User.destroy({
-       where: { id: id} 
-    })
-        .then(num => {
-            if (num == 1){
-                res.send({
-                    message: "Utilisateur supprimé"
-                });
-            } else {
-                res.send({
-                    message: "Impossible de supprimer l'utilisateur avec l'id : " + id
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message :"Erreur"
-            });
-        });
-  };
-
-
-  exports.deleteUserRole = (req,res) => {
-    const id = req.params.id;
-  
-    User_Role.destroy({
-       where: { id: id} 
-    })
-        .then(num => {
-            if (num == 1){
-                res.send({
-                    message: "Utilisateur/role supprimé"
-                });
-            } else {
-                res.send({
-                    message: "Impossible de supprimer l'utilisateur/role avec l'id : " + id
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message :"Erreur"
-            });
-        });
-  };
-
- // Méthodes UPDATE
+ 
+ // Méthodes UPDATE (spécifique pour la table User)
 
 exports.updateUser = (req, res) => {
   
+  console.log(req.body)
   User.update({
     username: req.body.username,
     email: req.body.email,
@@ -377,19 +260,3 @@ exports.updateUser = (req, res) => {
 };
 
 
-
-exports.updateUserRole = (req, res) => {
-  
-  User_Role.update({
-    id_user: req.body.id_user,
-    id_role: req.body.id_role,
-  },{where: {
-    id: req.params.id
-  },
-  returning: true,
-  plain: true})
-    .then(res.send({ message: "User was registered successfully!" }))   
-    .catch(err => {
-      res.status(500).send({ message: err.message });
-    });
-};

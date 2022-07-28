@@ -33,18 +33,15 @@
             <mat-expansion-panel mat-list-item>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        <button mat-button class="menu-button" (click)="onShowGestUser()">
+                        <button mat-button class="menu-button-side" (click)="onShowGestUser()" [disabled]="!navSideButton">
                             <mat-icon>person</mat-icon>
                             <span> Gestion des utilisateurs</span>
                         </button>
                     </mat-panel-title>  
                 </mat-expansion-panel-header> 
                             <mat-nav-list >
-                                <mat-list-item>
-                                    <button mat-button  class="menu-button" (click)="onShowTabUser()"><mat-icon>apps</mat-icon> Utilisateurs</button>
-                                </mat-list-item>
-                                <mat-list-item>
-                                    <button mat-button class="menu-button" (click)="onShowTabUser_role()"><mat-icon>apps</mat-icon> Utilisateur / Role</button>
+                                <mat-list-item *ngFor="let table of tabUser">
+                                    <button  appColorText mat-button  class="menu-button-side" (click)="onShowTabUser(table.nom)" [disabled]="!navSideButton" ><mat-icon>apps</mat-icon> {{table.rendu}}</button>
                                 </mat-list-item>
                             </mat-nav-list>
 
@@ -55,7 +52,7 @@
             <mat-expansion-panel mat-list-item>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        <button mat-button class="menu-button" (click)="onShowGestTable()">
+                        <button mat-button class="menu-button-side" (click)="onShowGestTable()" [disabled]="!navSideButton">
                             <mat-icon>list_alt</mat-icon>
                         <span> Gestion des tables</span>
                         </button>
@@ -63,7 +60,7 @@
                 </mat-expansion-panel-header> 
                 <mat-nav-list >
                     <mat-list-item *ngFor="let table of tables">
-                        <button mat-button  class="menu-button" (click)="onShowTables(table.nom)"><mat-icon>apps</mat-icon> {{table.rendu}}</button>
+                        <button  appColorText mat-button  class="menu-button-side" (click)="onShowTables(table.nom)" [disabled]="!navSideButton"><mat-icon>apps</mat-icon> {{table.rendu}}</button>
                     </mat-list-item>
                 </mat-nav-list>        
             </mat-expansion-panel>
@@ -85,14 +82,19 @@
                      [l]="l"
                      [a]="a"
                      [c]="c"
-                     [ch]="ch"></app-gestion-table>
+                     [ch]="ch"
+                     (blockNavSideButton)= "blockButton($event)"></app-gestion-table>
                 </div>
-                <div *ngIf="showGestUser && (showTableUser || showTableUser_Role)">
+                <div *ngIf="showGestUser && showTableUser ">
                     <app-gestion-user 
                      [rowData] = "rowData"
                      [columnDefs]="columnDefs" 
-                     [showTableUser]="showTableUser" 
-                     [showTableUser_Role] = "showTableUser_Role"></app-gestion-user>
+                     [selectedTable]="selectedTable"
+                     [l]="l"
+                     [a]="a"
+                     [c]="c"
+                     [ch]="ch"
+                     (blockNavSideButton)= "blockButton($event)"></app-gestion-user>
                 </div>
             </div>
         </div>
